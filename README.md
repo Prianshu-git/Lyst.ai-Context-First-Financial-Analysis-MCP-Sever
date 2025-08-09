@@ -734,3 +734,7 @@ async def resolve_your_new_tool(root, info, **args):
 ---
 
 **Financial Services AI** transforms financial document analysis through context-first AI reasoning, delivered via modern GraphQL and REST APIs. The platform enables financial professionals to achieve unprecedented efficiency in document analysis, deal structuring, and regulatory compliance, providing the same transformative capabilities that are revolutionizing the financial services industry. The system prioritizes accuracy, traceability, and professional presentation, making it the ideal solution for investment banks, law firms, private equity, and financial consulting organizations seeking to leverage AI for competitive advantage.
+
+## Data Used from
+
+https://www.sec.gov/data-research/sec-markets-data/financial-statement-data-sets
