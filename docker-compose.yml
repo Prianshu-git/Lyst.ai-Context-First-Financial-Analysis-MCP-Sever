@@ -1,0 +1,37 @@
+services:
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.32.2
+    restart: on-failure:0
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_MODULES: 'text2vec-transformers,generative-ollama'
+      CLUSTER_HOSTNAME: 'node1'
+      # text2vec-transformers inference service URL
+      TRANSFORMERS_INFERENCE_API: 'http://t2v:8080'
+      # generative-ollama service URL
+      GENERATION_API: 'http://ollama:11434'
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    depends_on:
+      - t2v
+      - ollama
+  t2v:
+    image: semitechnologies/transformers-inference:sentence-transformers-all-MiniLM-L6-v2
+    restart: unless-stopped
+    environment:
+      - ENABLE_CUDA=0
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+volumes:
+  weaviate_data:
+  ollama:

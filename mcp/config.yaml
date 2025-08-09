@@ -1,0 +1,26 @@
+service:
+  name: financial-ai-mcp
+  mode: service-only
+  context_first: true
+  default_output: xlsx
+
+weaviate:
+  endpoint: "http://localhost:8080"
+  vectorizer: openai
+  class_chunk: Chunk
+  class_table: TableCell
+
+retrieval:
+  k_vec: 50
+  k_bm25: 50
+  rerank_top: 12
+  filters: [tenantId, companyId, periodYear, periodQuarter, statementType]
+
+artifacts:
+  default_workbook:
+    sheets: [Results, Citations, Inputs & Assumptions]
+    results_columns: [Context, Evidence, Answer, Notes]
+    citations_columns: [Doc Name, Source URI, Doc Type, Statement Type, Period, Location, Quote, Chunk Id, Score]
+
+security:
+  enforce_tenant_scope: true

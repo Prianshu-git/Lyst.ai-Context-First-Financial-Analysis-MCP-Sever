@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP Tools for Financial AI",
+  "type": "object",
+  "properties": {
+    "financial_summary": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {"type": "string"},
+        "company_id": {"type": "string"},
+        "period": {"type": "object", "properties": {"year": {"type": "integer"}, "quarter": {"type": "integer"}}},
+        "output": {"type": "string", "enum": ["text","table","xlsx","json"], "default":"xlsx"}
+      },
+      "required": ["tenant_id","company_id"]
+    },
+    "ratio_benchmark": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {"type": "string"},
+        "company_id": {"type": "string"},
+        "metrics": {"type": "array", "items": {"type": "string"}},
+        "period": {"type": "object", "properties": {"year": {"type": "integer"}, "quarter": {"type": "integer"}}}
+      },
+      "required": ["tenant_id","company_id"]
+    },
+    "cashflow_insights": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {"type": "string"},
+        "company_id": {"type": "string"},
+        "period": {"type": "object", "properties": {"year": {"type": "integer"}, "quarter": {"type": "integer"}}}
+      },
+      "required": ["tenant_id","company_id"]
+    },
+    "scenario_monte_carlo": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {"type": "string"},
+        "company_id": {"type": "string"},
+        "horizon_years": {"type": "integer", "default": 3},
+        "trials": {"type": "integer", "default": 5000},
+        "seed": {"type": "integer"}
+      },
+      "required": ["tenant_id","company_id"]
+    },
+    "risk_compliance": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {"type": "string"},
+        "company_id": {"type": "string"},
+        "ruleset": {"type": "string", "enum": ["GAAP","SOX","Custom"], "default": "GAAP"}
+      },
+      "required": ["tenant_id","company_id"]
+    },
+    "qa": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {"type": "string"},
+        "company_id": {"type": "string"},
+        "question": {"type": "string"},
+        "citations": {"type": "object", "properties": {"min": {"type": "integer", "default": 1}, "max": {"type": "integer", "default": 10}, "include_quotes": {"type": "boolean", "default": true}}}
+      },
+      "required": ["tenant_id","company_id","question"]
+    }
+  }
+}

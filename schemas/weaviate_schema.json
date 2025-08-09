@@ -1,0 +1,92 @@
+{
+  "classes": [
+    {
+      "class": "Chunk",
+      "description": "Text chunk with precise source context for retrieval.",
+      "vectorizer": "text2vec-transformers",
+      "vectorIndexType": "hnsw",
+      "moduleConfig": {
+        "text2vec-transformers": {"vectorizeClassName": false}
+      },
+      "properties": [
+        {"name":"tenantId","dataType":["text"]},
+        {"name":"companyId","dataType":["text"]},
+        {"name":"documentId","dataType":["text"]},
+        {"name":"docName","dataType":["text"]},
+        {"name":"sourceUri","dataType":["text"]},
+        {"name":"docType","dataType":["text"]},
+        {"name":"statementType","dataType":["text"]},
+        {"name":"periodYear","dataType":["int"]},
+        {"name":"periodQuarter","dataType":["int"]},
+        {"name":"page","dataType":["int"]},
+        {"name":"lineStart","dataType":["int"]},
+        {"name":"lineEnd","dataType":["int"]},
+        {"name":"sheet","dataType":["text"]},
+        {"name":"cellRange","dataType":["text"]},
+        {"name":"section","dataType":["text"]},
+        {"name":"text","dataType":["text"]}
+      ]
+    },
+    {
+      "class": "TableCell",
+      "description": "Structured table row/cell embedded separately.",
+      "vectorizer": "text2vec-transformers",
+      "vectorIndexType": "hnsw",
+      "moduleConfig": {
+        "text2vec-transformers": {"vectorizeClassName": false}
+      },
+      "properties": [
+        {"name":"tenantId","dataType":["text"]},
+        {"name":"companyId","dataType":["text"]},
+        {"name":"statementId","dataType":["text"]},
+        {"name":"gaapKey","dataType":["text"]},
+        {"name":"label","dataType":["text"]},
+        {"name":"year","dataType":["int"]},
+        {"name":"quarter","dataType":["int"]},
+        {"name":"amount","dataType":["number"]},
+        {"name":"unit","dataType":["text"]},
+        {"name":"currency","dataType":["text"]},
+        {"name":"sourceRef","dataType":["text"]}
+      ]
+    },
+    {
+      "class": "AnswerLog",
+      "description": "Log of user questions and generated answers/artifacts.",
+      "vectorizer": "none",
+      "properties": [
+        {"name":"tenantId","dataType":["text"]},
+        {"name":"companyId","dataType":["text"]},
+        {"name":"question","dataType":["text"]},
+        {"name":"answerText","dataType":["text"]},
+        {"name":"artifactUri","dataType":["text"]},
+        {"name":"tool","dataType":["text"]},
+        {"name":"createdAt","dataType":["date"]}
+      ]
+    },
+    {
+      "class": "Citation",
+      "description": "Per-answer citation entries with precise locations.",
+      "vectorizer": "none",
+      "properties": [
+        {"name":"tenantId","dataType":["text"]},
+        {"name":"companyId","dataType":["text"]},
+        {"name":"answerLogId","dataType":["text"]},
+        {"name":"docName","dataType":["text"]},
+        {"name":"sourceUri","dataType":["text"]},
+        {"name":"docType","dataType":["text"]},
+        {"name":"statementType","dataType":["text"]},
+        {"name":"periodYear","dataType":["int"]},
+        {"name":"periodQuarter","dataType":["int"]},
+        {"name":"page","dataType":["int"]},
+        {"name":"lineStart","dataType":["int"]},
+        {"name":"lineEnd","dataType":["int"]},
+        {"name":"sheet","dataType":["text"]},
+        {"name":"cellRange","dataType":["text"]},
+        {"name":"quote","dataType":["text"]},
+        {"name":"chunkId","dataType":["text"]},
+        {"name":"score","dataType":["number"]},
+        {"name":"createdAt","dataType":["date"]}
+      ]
+    }
+  ]
+}
