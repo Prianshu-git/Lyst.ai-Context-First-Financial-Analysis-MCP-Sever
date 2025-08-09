@@ -1,10 +1,10 @@
-<img width="1048" height="1048" alt="Gemini_Generated_Image_51bvpm51bvpm51bv" src="https://github.com/user-attachments/assets/9df16b07-fb91-4ee5-b4ac-6334153fe557" />
+<img width="548" height="548" alt="Gemini_Generated_Image_51bvpm51bvpm51bv" src="https://github.com/user-attachments/assets/9df16b07-fb91-4ee5-b4ac-6334153fe557" />
 
 <div align = "center">
 <h1> Lyst.ai: Context-First Financial Analysis MCP Sever </h1>
 </div>
 
-<div>
+<div align = "center">
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) 
 </div>
 
