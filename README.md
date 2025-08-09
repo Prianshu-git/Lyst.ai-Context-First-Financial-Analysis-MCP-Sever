@@ -1,4 +1,10 @@
+<img width="2048" height="2048" alt="Gemini_Generated_Image_51bvpm51bvpm51bv" src="https://github.com/user-attachments/assets/9df16b07-fb91-4ee5-b4ac-6334153fe557" />
+
+<div align = "center">
 # Lyst.ai: Context-First Financial Analysis MCP Sever
+</div>
+
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) 
 
 ## Overview
 
@@ -49,6 +55,9 @@ The platform is built around a **distributed orchestration engine** that process
                        │  (Ollama)        │    │  (Reports)      │
                        └──────────────────┘    └─────────────────┘
 ```
+<div align = "center">
+<img width="3840" height="3286" alt="Untitled diagram _ Mermaid Chart-2025-08-09-093228" src="https://github.com/user-attachments/assets/e37e3b2b-bb0a-4b66-a6b1-17abdd7ad2d2" />
+</div>
 
 ### Key Components
 
@@ -164,7 +173,7 @@ curl http://localhost:11434/api/tags | jq '.models[].name'
 
 ### 5. Data Ingestion
 
-Place your financial documents in the `data/` directory:
+Place your financial documents in the `data/` directory(pdf,txt,excel):
 
 ```
 data/
@@ -712,9 +721,11 @@ async def resolve_your_new_tool(root, info, **args):
 
 ---
 
-## 📄 License
+## 📄 Sample Outputs
 
-MIT License - see LICENSE file for details.
+<img width="881" height="139" alt="Screenshot 2025-08-09 at 7 00 20 PM" src="https://github.com/user-attachments/assets/cb1b7171-295b-42b4-9231-9146d6d61194" />
+<img width="895" height="589" alt="Screenshot 2025-08-09 at 2 30 09 PM" src="https://github.com/user-attachments/assets/35e479b2-5b5c-4c7c-9663-f262c81782f4" />
+<img width="939" height="226" alt="Screenshot 2025-08-09 at 2 19 17 PM" src="https://github.com/user-attachments/assets/89d1c658-f6d1-40be-81a7-ae52ff30e340" />
 
 ---
 
