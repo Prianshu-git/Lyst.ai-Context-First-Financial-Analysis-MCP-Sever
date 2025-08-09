@@ -50,12 +50,12 @@ The platform is built around a **distributed orchestration engine** that process
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Client Apps   │───▶│   MCP server     │───▶│   Weaviate DB   │
-│                 │    │ Graphql,Restful  │    │  (Vector Store) │
+│                 │<───│ Graphql,Restful  │<───│  (Vector Store) │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                               │
                               ▼
                        ┌──────────────────┐    ┌─────────────────┐
-                       │  Local LLM       │    │  Excel Artifacts│
+                       │  Local LLM       │───▶│  Excel Artifacts│
                        │  (Ollama)        │    │  (Reports)      │
                        └──────────────────┘    └─────────────────┘
 ```
