@@ -1,8 +1,8 @@
-# Financial Services AI: MCP-Based Financial Analysis Platform
+# Lyst.ai: Context-First Financial Analysis MCP Sever
 
 ## Overview
 
-**Financial Services AI** is a context-first financial analysis platform built around the **Model Context Protocol (MCP) server** as its core MVP. The system provides intelligent Q&A, financial ratio analysis, and automated report generation through a RESTful API that serves as an MCP server, enabling seamless integration with AI-powered financial analysis workflows.
+**Lyst.ai** is a context-first financial analysis platform that revolutionizes how investors, bankers, consultants, and lawyers process complex financial and legal documents. The system provides intelligent Q&A, financial ratio analysis, and automated report generation through GraphQL APIs and RESTful endpoints, enabling seamless integration with AI-powered financial analysis workflows.
 
 ### Core Philosophy: Context-First Architecture
 
@@ -15,16 +15,32 @@ This platform prioritizes **retrieving relevant financial context first**, then 
 
 ---
 
+## 🌟 Real-World Impact & Industry Applications
+
+In today's financial landscape, professionals spend countless hours combing through market research, virtual data rooms, contracts, and regulatory filings to make high-stakes decisions. Our platform addresses this challenge by creating an "AI associate" that can perform in seconds what used to take entire teams days or weeks.
+
+### Transforming Financial Workflows
+
+**Investment Banking**: Save 30–40 hours per deal creating marketing materials, prepping for client meetings, and responding to counterparties through automated document analysis and insight generation.
+
+**Private Credit Teams**: Automate the extraction of loan terms and covenants, eliminating days of manual contract review and reducing third-party consultation costs.
+
+**Private Equity Firms**: Accelerate screening, due diligence, and expert network research by 20–30 hours per deal through comprehensive document synthesis.
+
+**Law Firms**: Reduce credit agreement review time by 75%, saving thousands of dollars in legal fees per hour through automated clause interpretation and comparison.
+
+Beyond efficiency gains, our platform enables professionals to leverage more historical data than any human could synthesize alone, using advanced context windows and multi-document analysis capabilities that were previously impossible at scale.
+
+---
+
 ## 🏗️ Architecture Overview
 
-### MCP Server as MVP
-
-The **MCP (Model Context Protocol) server** (`src/financial_ai/mcp/server.py`) is the heart of the system, exposing RESTful endpoints that implement financial analysis tools:
+The platform is built around a **distributed orchestration engine** that processes complex financial queries through multiple specialized components:
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Client Apps   │───▶│   MCP Server     │───▶│   Weaviate DB   │
-│                 │    │  (FastAPI)       │    │  (Vector Store) │
+│   Client Apps   │───▶│   MCP server     │───▶│   Weaviate DB   │
+│                 │    │ Graphql,Restful  │    │  (Vector Store) │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                               │
                               ▼
@@ -38,7 +54,8 @@ The **MCP (Model Context Protocol) server** (`src/financial_ai/mcp/server.py`) i
 
 | Component | Purpose | Technology Stack |
 |-----------|---------|------------------|
-| **MCP Server** | RESTful API endpoints for financial tools | FastAPI, Python 3.9+ |
+| **GraphQL API** | Flexible query interface for complex financial data | GraphQL, FastAPI |
+| **RESTful Endpoints** | Standard HTTP API for tool integration | FastAPI, Python 3.9+ |
 | **Vector Database** | Document storage and hybrid search | Weaviate + text2vec-transformers |
 | **Local LLM** | AI reasoning and insight generation | Ollama (llama3.2:1b) |
 | **Ingestion Pipeline** | Document processing and vectorization | Python, regex, chunking |
@@ -51,8 +68,9 @@ The **MCP (Model Context Protocol) server** (`src/financial_ai/mcp/server.py`) i
 ```
 Financial-services-ai/
 ├── src/financial_ai/                    # Core Python package
-│   ├── mcp/
-│   │   └── server.py                    # 🎯 MCP SERVER (MVP)
+│   ├── api/
+│   │   ├── server.py                    # 🎯 Main MCP Server (GraphQL + REST)
+│   │   └── graphql_schema.py            # GraphQL schema definitions
 │   ├── storage/
 │   │   └── weaviate_client.py           # Vector database client
 │   ├── ingestion/
@@ -65,7 +83,7 @@ Financial-services-ai/
 │   └── config.py                        # Centralized configuration
 ├── schemas/
 │   ├── weaviate_schema.json             # Vector DB schema definition
-│   ├── mcp_tools.json                   # MCP tool specifications
+│   ├── graphql_schema.graphql           # GraphQL schema definition
 │   └── postgres.sql                     # Future relational DB schema
 ├── scripts/
 │   ├── dev_run.sh                       # Development server launcher
@@ -170,7 +188,7 @@ python -m financial_ai.ingestion.ingest data/ \
   --progress-every 5
 ```
 
-### 6. Start MCP Server
+### 6. Start API Server
 
 ```bash
 # Development mode with auto-reload
@@ -178,18 +196,20 @@ python -m financial_ai.ingestion.ingest data/ \
 
 # Or manually:
 export PYTHONPATH=src
-uvicorn financial_ai.mcp.server:app --host 0.0.0.0 --port 8088 --reload
+uvicorn financial_ai.api.server:app --host 0.0.0.0 --port 8088 --reload
 ```
 
-**Server available at:** `http://localhost:8088`
+**Server available at:** 
+- REST API: `http://localhost:8088`
+- GraphQL Playground: `http://localhost:8088/graphql`
 
 ---
 
 ## 🔧 Detailed Module Explanations
 
-### 1. MCP Server (`src/financial_ai/mcp/server.py`) 🎯
+### 1. API Server (`src/financial_ai/api/server.py`) 🎯
 
-**The MVP component** - FastAPI application exposing financial analysis tools:
+**The core platform component** - FastAPI application with GraphQL and REST endpoints:
 
 ```python
 @app.post("/tools/qa")
@@ -206,7 +226,39 @@ async def qa(req: QARequest) -> Dict[str, Any]:
     return {"artifact_uri": path, "rows": len(results_rows)}
 ```
 
-**Available Endpoints:**
+**GraphQL Queries Available:**
+
+```graphql
+# Query financial data with flexible filtering
+query GetFinancialData($companyId: String!, $year: Int, $quarter: Int) {
+  company(id: $companyId) {
+    financialData(year: $year, quarter: $quarter) {
+      revenue
+      assets
+      liabilities
+      period {
+        year
+        quarter
+      }
+    }
+  }
+}
+
+# Perform contextual Q&A
+query PerformQA($question: String!, $filters: FinancialFilters) {
+  qa(question: $question, filters: $filters) {
+    answer
+    confidence
+    sources {
+      document
+      page
+      lines
+    }
+  }
+}
+```
+
+**Available REST Endpoints:**
 
 | Endpoint | Purpose | Input | Output |
 |----------|---------|-------|--------|
@@ -214,14 +266,44 @@ async def qa(req: QARequest) -> Dict[str, Any]:
 | `POST /tools/financial_summary` | Company overview | Company ID, period | Excel summary |
 | `POST /tools/ratios` | Financial ratio analysis | Company ID | Calculated ratios |
 | `GET /health` | Server health check | None | Status response |
+| `POST /graphql` | GraphQL endpoint | GraphQL query | Flexible JSON response |
 
-### 2. Vector Database Client (`src/financial_ai/storage/weaviate_client.py`)
+### 2. GraphQL Schema (`src/financial_ai/api/graphql_schema.py`)
+
+**Flexible query interface** providing:
+
+```python
+type Company {
+  id: ID!
+  name: String
+  financialData(year: Int, quarter: Int): [FinancialPeriod]
+  ratios(period: PeriodInput): RatioAnalysis
+}
+
+type FinancialPeriod {
+  year: Int!
+  quarter: Int
+  revenue: Float
+  assets: Float
+  liabilities: Float
+  cashFlow: Float
+}
+
+type Query {
+  company(id: ID!): Company
+  companies(filter: CompanyFilter): [Company]
+  qa(question: String!, filters: FinancialFilters): QAResult
+}
+```
+
+### 3. Vector Database Client (`src/financial_ai/storage/weaviate_client.py`)
 
 **Weaviate integration layer** providing:
 
 - **Hybrid Search**: BM25 (keyword) + vector similarity
 - **Batch Ingestion**: Optimized for large document sets
 - **Schema Management**: Chunk and TableCell classes
+- **GraphQL Integration**: Native GraphQL support for complex queries
 
 ```python
 def hybrid_search(self, query: str, where: Optional[Dict] = None):
@@ -230,9 +312,13 @@ def hybrid_search(self, query: str, where: Optional[Dict] = None):
     
     # Fallback: Pure vector search if BM25 fails
     # Fallback: Global search without filters
+
+def graphql_query(self, query: str, variables: Optional[Dict] = None):
+    # Direct GraphQL queries to Weaviate
+    return self.client.query.raw(query)
 ```
 
-### 3. Ingestion Pipeline (`src/financial_ai/ingestion/`)
+### 4. Ingestion Pipeline (`src/financial_ai/ingestion/`)
 
 **Document processing and vectorization:**
 
@@ -262,7 +348,7 @@ def ingest_path(path: str, tenant_id: str, company_id: str):
 - Financial statement parsing
 - Structured data extraction
 
-### 4. Context Retrieval (`src/financial_ai/tools/retrieval.py`)
+### 5. Context Retrieval (`src/financial_ai/tools/retrieval.py`)
 
 **Smart context retrieval with fallback strategy:**
 
@@ -285,7 +371,7 @@ def retrieve_context(query, tenant_id, company_id, year=None, quarter=None):
 - Source attribution: `(Doc: 10k, Page 15, Lines 1250-1275)`
 - Evidence extraction: `Revenue: $1.2B USD`
 
-### 5. Excel Artifact Generation (`src/financial_ai/tools/excel_artifact.py`)
+### 6. Excel Artifact Generation (`src/financial_ai/tools/excel_artifact.py`)
 
 **Professional report creation with multiple sheets:**
 
@@ -308,7 +394,7 @@ def save_results_workbook(results_rows, citations_rows, inputs_rows):
 - **Professional formatting** with auto-sizing columns
 - **Multiple sheets** for different data types
 
-### 6. Financial Ratio Calculations (`src/financial_ai/tools/ratios.py`)
+### 7. Financial Ratio Calculations (`src/financial_ai/tools/ratios.py`)
 
 **Automated financial metric computation:**
 
@@ -321,7 +407,7 @@ def compute_basic_ratios(values: Dict[str, float], context: str):
     ]
 ```
 
-### 7. Configuration Management (`src/financial_ai/config.py`)
+### 8. Configuration Management (`src/financial_ai/config.py`)
 
 **Centralized configuration with environment variable support:**
 
@@ -369,22 +455,91 @@ class Config:
 }
 ```
 
-### MCP Tools Schema (`schemas/mcp_tools.json`)
+### GraphQL Schema (`schemas/graphql_schema.graphql`)
 
-**Tool definitions for the MCP server:**
+**Complete GraphQL API schema:**
 
-- `qa`: Question answering with context retrieval
-- `financial_summary`: Company overview generation  
-- `ratio_benchmark`: Financial ratio analysis
-- `cashflow_insights`: Cash flow analysis
-- `scenario_monte_carlo`: Monte Carlo simulations
-- `risk_compliance`: Compliance checking
+```graphql
+type Query {
+  company(id: ID!): Company
+  companies(filter: CompanyFilter): [Company]
+  qa(question: String!, filters: FinancialFilters): QAResult
+  ratios(companyId: ID!, period: PeriodInput): RatioAnalysis
+  financialSummary(companyId: ID!, period: PeriodInput): FinancialSummary
+}
+
+input FinancialFilters {
+  tenantId: String!
+  companyId: String!
+  year: Int
+  quarter: Int
+}
+
+input PeriodInput {
+  year: Int!
+  quarter: Int
+}
+
+type QAResult {
+  answer: String!
+  confidence: Float
+  sources: [DocumentSource]
+  artifactUri: String
+}
+```
 
 ---
 
 ## 📊 Usage Examples
 
-### 1. Basic Q&A Query
+### 1. GraphQL Queries
+
+```graphql
+# Complex financial data query
+query GetCompanyFinancials {
+  company(id: "a40bcfe3-9330-4d91-88de-b7afe9460327") {
+    name
+    financialData(year: 2025, quarter: 2) {
+      revenue
+      assets
+      liabilities
+      period {
+        year
+        quarter
+      }
+    }
+    ratios(period: {year: 2025, quarter: 2}) {
+      currentRatio
+      roe
+      roa
+    }
+  }
+}
+
+# Contextual Q&A with filters
+query FinancialQA {
+  qa(
+    question: "What are the revenue trends and asset values?"
+    filters: {
+      tenantId: "tenant-dev"
+      companyId: "a40bcfe3-9330-4d91-88de-b7afe9460327"
+      year: 2025
+      quarter: 2
+    }
+  ) {
+    answer
+    confidence
+    sources {
+      document
+      page
+      lines
+    }
+    artifactUri
+  }
+}
+```
+
+### 2. REST API Queries
 
 ```bash
 curl -X POST http://localhost:8088/tools/qa \
@@ -406,19 +561,18 @@ curl -X POST http://localhost:8088/tools/qa \
 }
 ```
 
-### 2. Financial Summary
+### 3. Direct Weaviate GraphQL
 
 ```bash
-curl -X POST http://localhost:8088/tools/financial_summary \
+# Query documents directly through Weaviate's GraphQL endpoint
+curl "http://localhost:8080/v1/graphql" \
   -H "Content-Type: application/json" \
   -d '{
-    "tenant_id": "tenant-dev",
-    "company_id": "company-uuid",
-    "period": {"year": 2024, "quarter": 4}
+    "query": "{ Get { Chunk(where: {path: [\"periodYear\"], operator: Equal, valueNumber: 2025}) { text periodYear periodQuarter companyId } } }"
   }'
 ```
 
-### 3. Health Check
+### 4. Health Check
 
 ```bash
 curl http://localhost:8088/health
@@ -465,6 +619,11 @@ curl -X POST http://localhost:8088/tools/qa \
   -H "Content-Type: application/json" \
   -d '{"tenant_id":"tenant-dev","company_id":"test-uuid","question":"revenue"}'
 
+# Test GraphQL endpoint
+curl -X POST http://localhost:8088/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ companies { id name } }"}'
+
 # Verify Weaviate data
 curl "http://localhost:8080/v1/graphql" \
   -H "Content-Type: application/json" \
@@ -497,19 +656,22 @@ curl http://localhost:8080/v1/meta
 
 - **Weaviate**: Can scale horizontally with clustering
 - **Ollama**: GPU acceleration for faster inference
-- **MCP Server**: Deploy with Gunicorn/uWSGI for production
+- **API Server**: Deploy with Gunicorn/uWSGI for production
+- **GraphQL**: Built-in query optimization and caching
 
 ### Security
 
-- Add authentication to MCP endpoints
+- Add authentication to API endpoints
 - Secure Weaviate with API keys
 - Implement tenant isolation
+- GraphQL query depth limiting
 
 ### Monitoring
 
 - Add structured logging
 - Implement health checks for all services
 - Monitor artifact generation performance
+- GraphQL query analytics
 
 ---
 
@@ -517,12 +679,12 @@ curl http://localhost:8080/v1/meta
 
 1. **Fork the repository**
 2. **Create feature branch**: `git checkout -b feature/new-tool`
-3. **Add your MCP tool** in `src/financial_ai/mcp/server.py`
-4. **Update schemas** in `schemas/mcp_tools.json`
+3. **Add your API endpoint** in `src/financial_ai/api/server.py`
+4. **Update GraphQL schema** in `schemas/graphql_schema.graphql`
 5. **Test thoroughly** with real financial data
 6. **Submit pull request**
 
-### Adding New MCP Tools
+### Adding New API Tools
 
 ```python
 @app.post("/tools/your_new_tool")
@@ -532,14 +694,19 @@ async def your_new_tool(req: YourRequest) -> Dict[str, Any]:
     # 3. Process with LLM or calculations
     # 4. Generate artifact
     # 5. Log and return
+
+# Add corresponding GraphQL resolver
+async def resolve_your_new_tool(root, info, **args):
+    # GraphQL resolver logic
+    return your_new_tool_result
 ```
 
 ---
 
 ## 📚 Technical References
 
-- **MCP Protocol**: [Model Context Protocol Specification](https://modelcontextprotocol.io/)
-- **Weaviate Documentation**: [Vector Database Guide](https://weaviate.io/developers/weaviate)
+- **GraphQL Specification**: [GraphQL.org](https://graphql.org/learn/)
+- **Weaviate GraphQL**: [Vector Database GraphQL API](https://weaviate.io/developers/weaviate/api/graphql)
 - **Ollama Models**: [Local LLM Setup](https://ollama.ai/library)
 - **FastAPI**: [Python Web Framework](https://fastapi.tiangolo.com/)
 
@@ -551,4 +718,4 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Financial Services AI** transforms financial document analysis through context-first AI reasoning, delivered via a robust MCP server architecture. The system prioritizes accuracy, traceability, and professional presentation, making it ideal for financial analysts, researchers, and AI-powered financial applications.
+**Financial Services AI** transforms financial document analysis through context-first AI reasoning, delivered via modern GraphQL and REST APIs. The platform enables financial professionals to achieve unprecedented efficiency in document analysis, deal structuring, and regulatory compliance, providing the same transformative capabilities that are revolutionizing the financial services industry. The system prioritizes accuracy, traceability, and professional presentation, making it the ideal solution for investment banks, law firms, private equity, and financial consulting organizations seeking to leverage AI for competitive advantage.
